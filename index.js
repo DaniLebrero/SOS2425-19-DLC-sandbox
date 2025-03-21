@@ -1,18 +1,35 @@
 const express = require("express");
-const cool = require("cool-ascii-faces");
 const app = express();
 const PORT = process.env.PORT || 16078;
+const BASE_API =  "/api/v1"
 
 app.use("/",express.static("./public"));
+app.use(express.json());
 
-app.get("/hello",(request,response)=>{
-    response.send("Hello from the server!");
+let contacts = [
+    {
+        name: "peter",
+        phone: 12345
+    },
+    {
+        name: "pablo",
+        phone: 78910
+    }
+]
+
+app.get(BASE_API + "/contacts",(request,response)=>{
+    console.log("New GET to /contacts")
+    response.send(JSON.stringify(contacts, null,2));
 });
-
-app.get("/cool",(request,response)=>{
-    response.send(cool());
+app.post(BASE_API + "/contacts",(request,response)=>{
+    console.log("POST to /contacts")
+    let newContact = JSON.parse(request.body)
+    contacts.push(newContact)
+    response.sendStatus(201);
 });
 
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}!`);
 });
+
+
